@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的博客系統</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #ffeb3b;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: #6a11cb;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            background-color: white;
+            margin-bottom: 30px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #2d3436;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #636e72;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .articles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .article-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .article-img {
+            height: 180px;
+            background: linear-gradient(45deg, #74ebd5, #9face6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .article-content {
+            padding: 20px;
+        }
+        
+        .article-content h3 {
+            margin-bottom: 10px;
+            color: #2d3436;
+        }
+        
+        .article-content p {
+            color: #636e72;
+            margin-bottom: 15px;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #74b9ff;
+            font-size: 0.9rem;
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .sidebar h2 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f2f6;
+            color: #2d3436;
+        }
+        
+        .user-list {
+            list-style: none;
+        }
+        
+        .user-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f2f6;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #fd79a8, #e17055);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            color: #2d3436;
+        }
+        
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #636e72;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2d3436;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #74b9ff;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .form-footer a {
+            color: #74b9ff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #4285F4;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        
+        .google-btn i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        footer {
+            background: #2d3436;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #74b9ff;
+        }
+        
+        .footer-bottom {
+            padding-top: 20px;
+            border-top: 1px solid #636e72;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 頂部導航欄 -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-blog"></i>
+                    <span>我的博客</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#">首頁</a></li>
+                    <li><a href="#">文章</a></li>
+                    <li><a href="#">關於我們</a></li>
+                    <li><a href="#">聯絡</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <button class="btn btn-outline" onclick="openLoginModal()">登入</button>
+                    <button class="btn btn-primary" onclick="openRegisterModal()">註冊</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主內容區域 -->
+    <div class="hero">
+        <div class="container">
+            <h1>歡迎來到我的博客</h1>
+            <p>這裡是分享知識、經驗和想法的地方。管理員可以發布文章，用戶可以評論和互動。</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div class="articles">
+                <!-- 文章卡片 -->
+                <div class="article-card">
+                    <div class="article-img">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <div class="article-content">
+                        <h3>前端開發的未來趨勢</h3>
+                        <p>探討2023年前端開發的新技術和趨勢，包括WebAssembly、微前端架構等。</p>
+                        <div class="article-meta">
+                            <span>2023-10-15</span>
+                            <span>12 評論</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="article-card">
+                    <div class="article-img">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="article-content">
+                        <h3>數據庫優化技巧</h3>
+                        <p>分享一些實用的數據庫性能優化技巧，幫助提升應用程序響應速度。</p>
+                        <div class="article-meta">
+                            <span>2023-10-10</span>
+                            <span>8 評論</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="article-card">
+                    <div class="article-img">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="article-content">
+                        <h3>網絡安全最佳實踐</h3>
+                        <p>保護您的網站和應用程序免受常見網絡攻擊的方法和策略。</p>
+                        <div class="article-meta">
+                            <span>2023-10-05</span>
+                            <span>15 評論</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <h2>在線用戶</h2>
+                <ul class="user-list">
+                    <li>
+                        <div class="avatar">A</div>
+                        <div>管理員</div>
+                    </li>
+                    <li>
+                        <div class="avatar">J</div>
+                        <div>John</div>
+                    </li>
+                    <li>
+                        <div class="avatar">E</div>
+                        <div>Emma</div>
+                    </li>
+                    <li>
+                        <div class="avatar">M</div>
+                        <div>Mike</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 註冊模態框 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>註冊帳號</h2>
+                <span class="close" onclick="closeRegisterModal()">&times;</span>
+            </div>
+            <div class="form-group">
+                <label for="username">用戶名</label>
+                <input type="text" id="username" placeholder="請輸入用戶名">
+            </div>
+            <div class="form-group">
+                <label for="email">電子郵件</label>
+                <input type="email" id="email" placeholder="請輸入電子郵件">
+            </div>
+            <div class="form-group">
+                <label for="password">密碼</label>
+                <input type="password" id="password" placeholder="請輸入密碼">
+            </div>
+            <div class="form-group">
+                <label for="adminCode">管理員驗證碼 (選填)</label>
+                <input type="password" id="adminCode" placeholder="輸入管理員密碼">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="register()">註冊</button>
+            
+            <div class="google-btn" onclick="googleLogin()">
+                <i class="fab fa-google"></i>
+                使用 Google 註冊/登入
+            </div>
+            
+            <div class="form-footer">
+                <p>已經有帳號？ <a onclick="switchToLogin()">立即登入</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登入模態框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>登入帳號</h2>
+                <span class="close" onclick="closeLoginModal()">&times;</span>
+            </div>
+            <div class="form-group">
+                <label for="loginEmail">電子郵件</label>
+                <input type="email" id="loginEmail" placeholder="請輸入電子郵件">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">密碼</label>
+                <input type="password" id="loginPassword" placeholder="請輸入密碼">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="login()">登入</button>
+            
+            <div class="google-btn" onclick="googleLogin()">
+                <i class="fab fa-google"></i>
+                使用 Google 登入
+            </div>
+            
+            <div class="form-footer">
+                <p>還沒有帳號？ <a onclick="switchToRegister()">立即註冊</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁尾 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>關於我們</h3>
+                    <p>我們是一個分享技術和知識的博客社區，致力於提供有價值的內容。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>聯絡我們</h3>
+                    <p>Email: contact@myblog.com</p>
+                    <p>Phone: +886 2 1234 5678</p>
+                </div>
+                <div class="footer-section">
+                    <h3>關注我們</h3>
+                    <p>
+                        <i class="fab fa-facebook"></i> 
+                        <i class="fab fa-twitter"></i> 
+                        <i class="fab fa-instagram"></i>
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 我的博客系統. 版權所有</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 模態框控制函數
+        function openRegisterModal() {
+            document.getElementById('registerModal').style.display = 'flex';
+        }
+        
+        function closeRegisterModal() {
+            document.getElementById('registerModal').style.display = 'none';
+        }
+        
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+        
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+        
+        function switchToLogin() {
+            closeRegisterModal();
+            openLoginModal();
+        }
+        
+        function switchToRegister() {
+            closeLoginModal();
+            openRegisterModal();
+        }
+        
+        // 點擊模態框外部關閉
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('registerModal')) {
+                closeRegisterModal();
+            }
+            if (event.target == document.getElementById('loginModal')) {
+                closeLoginModal();
+            }
+        }
+        
+        // 註冊功能
+        function register() {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const adminCode = document.getElementById('adminCode').value;
+            
+            if (!username || !email || !password) {
+                alert('請填寫所有必填字段！');
+                return;
+            }
+            
+            let role = 'user';
+            if (adminCode === 'G137@') {
+                role = 'admin';
+                alert('管理員帳號創建成功！');
+            } else if (adminCode) {
+                alert('管理員驗證碼不正確，將創建普通用戶帳號。');
+            } else {
+                alert('用戶帳號創建成功！');
+            }
+            
+            // 這裡通常會發送到後端處理
+            console.log('註冊信息:', {username, email, password, role});
+            
+            // 關閉模態框
+            closeRegisterModal();
+        }
+        
+        // 登入功能
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('請填寫所有字段！');
+                return;
+            }
+            
+            // 這裡通常會發送到後端處理
+            console.log('登入信息:', {email, password});
+            
+            // 關閉模態框
+            closeLoginModal();
+            
+            // 模擬成功登入
+            alert('登入成功！');
+        }
+        
+        // Google 登入功能
+        function googleLogin() {
+            // 這裡通常會調用Google OAuth API
+            alert('即將跳轉到 Google 登入頁面...');
+            
+            // 模擬成功登入
+            setTimeout(() => {
+                closeRegisterModal();
+                closeLoginModal();
+                alert('Google 登入成功！');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
